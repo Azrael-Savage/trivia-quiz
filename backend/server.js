@@ -1,18 +1,17 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const path = require('path'); // Added path module
 
 const app = express();
 
-// Set up CORS to accept requests from your client deployed on GitHub Pages
 const corsOptions = {
-    origin: 'https://Azrael-Savage.github.io',
+    origin: ['http://localhost:3000', 'https://azrael-savage.github.io'],
     optionsSuccessStatus: 200 
 };
 
 app.use(cors(corsOptions));
 
-// This ensures the app uses the port provided by Heroku or defaults to 3001 for local development
 const PORT = process.env.PORT || 3001;
 
 app.get('/getTriviaQuestions', async (req, res) => {
@@ -34,6 +33,14 @@ app.get('/getTriviaQuestions', async (req, res) => {
         console.error('Error fetching trivia questions:', error);
         res.status(500).send('Failed to fetch questions.');
     }
+});
+
+// Serve static files from the 'build' directory
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// Catch-all route to serve the React app
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
 app.listen(PORT, () => {

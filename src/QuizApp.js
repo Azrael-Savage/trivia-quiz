@@ -17,12 +17,16 @@ const QuizApp = () => {
     }, []);
 
     const startQuiz = async () => {
-        const response = await axios.get('https://trivia1-385249f83da0.herokuapp.com/getTriviaQuestions');
-        setQuestions(response.data);
-        setCurrentQuestionIndex(0);
-        setScore(0);
-        setShowScore(false);
-        setShowHighScores(false);
+        try {
+            const response = await axios.get('https://trivia1-385249f83da0.herokuapp.com/getTriviaQuestions');
+            setQuestions(response.data);
+            setCurrentQuestionIndex(0);
+            setScore(0);
+            setShowScore(false);
+            setShowHighScores(false);
+        } catch (error) {
+            console.error('Error fetching trivia questions:', error);
+        }
     };
 
     const handleAnswerOptionClick = (isCorrect, index) => {
@@ -58,14 +62,14 @@ const QuizApp = () => {
     };
 
     const resetQuiz = () => {
-    setQuestions([]);
-    setCurrentQuestionIndex(0);
-    setScore(0);
-    setShowScore(false);
-    setShowSaveScore(false);
-    setShowHighScores(false);
-    setUsername("");
-};
+        setQuestions([]);
+        setCurrentQuestionIndex(0);
+        setScore(0);
+        setShowScore(false);
+        setShowSaveScore(false);
+        setShowHighScores(false);
+        setUsername("");
+    };
 
     return (
         <div className="quiz-app">
@@ -116,7 +120,6 @@ const QuizApp = () => {
                     </div>
                     <button className="home-button" onClick={resetQuiz}>Home</button>
                 </div>
-                
             ) : (
                 <div className="start-section">
                     <div className="instructions">
@@ -125,7 +128,6 @@ const QuizApp = () => {
                         <p>Your score will be displayed at the end. Good luck!</p>
                     </div>
                     <button onClick={startQuiz}>Start Quiz</button>
-                    
                     <div className="top-score">
                         <h3>Top Score:</h3>
                         {highscores[0] && (
