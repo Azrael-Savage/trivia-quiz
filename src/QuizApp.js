@@ -17,7 +17,7 @@ const QuizApp = () => {
     }, []);
 
     const startQuiz = async () => {
-        const response = await axios.get('http://localhost:3001/getTriviaQuestions');
+        const response = await axios.get('https://trivia1-385249f83da0.herokuapp.com/getTriviaQuestions');
         setQuestions(response.data);
         setCurrentQuestionIndex(0);
         setScore(0);
