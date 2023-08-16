@@ -95,3 +95,40 @@ button:hover:before {
     transform: translate(-50%, -50%) scale(1);
 }
 
+@keyframes correct {
+  0% {
+      background-color: #007BFF;
+      transform: scale(1);
+  }
+  50% {
+      background-color: #4CAF50;
+      transform: scale(1.1);
+  }
+  100% {
+      background-color: #007BFF;
+      transform: scale(1);
+  }
+}
+
+@keyframes wrong {
+  0% {
+      background-color: #007BFF;
+      transform: scale(1);
+  }
+  50% {
+      background-color: #f44336;
+      transform: scale(1.1);
+  }
+  100% {
+      background-color: #007BFF;
+      transform: scale(1);
+  }
+}
+
+.correct-answer {
+  animation: correct 1s forwards;
+}
+
+.wrong-answer {
+  animation: wrong 1s forwards;
+}

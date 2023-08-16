@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const QuizApp = () => {
@@ -8,6 +8,13 @@ const QuizApp = () => {
     const [showScore, setShowScore] = useState(false);
     const [username, setUsername] = useState("");
     const [showSaveScore, setShowSaveScore] = useState(false);
+    const [highscores, setHighscores] = useState([]);
+    const [showHighScores, setShowHighScores] = useState(false);
+
+    useEffect(() => {
+        const storedHighscores = JSON.parse(localStorage.getItem("highscores") || "[]");
+        setHighscores(storedHighscores);
+    }, []);
 
     const startQuiz = async () => {
         const response = await axios.get('http://localhost:3001/getTriviaQuestions');
@@ -15,6 +22,7 @@ const QuizApp = () => {
         setCurrentQuestionIndex(0);
         setScore(0);
         setShowScore(false);
+        setShowHighScores(false);
     };
 
     const handleAnswerOptionClick = (isCorrect, index) => {
@@ -37,16 +45,33 @@ const QuizApp = () => {
     };
 
     const saveScore = () => {
-        const highscores = JSON.parse(localStorage.getItem("highscores") || "[]");
-        highscores.push({ username, score });
-        localStorage.setItem("highscores", JSON.stringify(highscores));
+        const newHighscores = [...highscores, { username, score }];
+        newHighscores.sort((a, b) => b.score - a.score);  
+        localStorage.setItem("highscores", JSON.stringify(newHighscores));
+        setHighscores(newHighscores);
         setShowSaveScore(false);
         setShowScore(true);
     };
 
+    const toggleHighScores = () => {
+        setShowHighScores(prev => !prev);
+    };
+
     return (
         <div className="quiz-app">
-            {showSaveScore ? (
+            {showHighScores ? (
+                <div className="highscores-section">
+                    <h2>High Scores</h2>
+                    <ul>
+                        {highscores.map((scoreEntry, index) => (
+                            <li key={index}>
+                                {scoreEntry.username}: {scoreEntry.score}
+                            </li>
+                        ))}
+                    </ul>
+                    <button onClick={toggleHighScores}>Back to Start</button>
+                </div>
+            ) : showSaveScore ? (
                 <div className="save-score-section">
                     <input
                         type="text"
@@ -61,39 +86,42 @@ const QuizApp = () => {
                     You scored {score} out of {questions.length}
                     <button onClick={startQuiz}>Try Again</button>
                 </div>
-            ) : (
-                <>
-                    {questions.length > 0 ? (
-                        <div className="question-section">
-                            <div className="question-count">
-                                <span>Question {currentQuestionIndex + 1}</span>/{questions.length}
-                            </div>
-                            <div className="score-section">
-                                Current Score: {score}
-                            </div>
-                            <div className="question-text">{questions[currentQuestionIndex].question}</div>
-                            <div className="answer-section">
-                                {questions[currentQuestionIndex].answers.map((answer, index) => (
-                                    <button 
-                                        key={index} 
-                                        onClick={() => handleAnswerOptionClick(answer.isCorrect, index)}
-                                    >
-                                        {answer.text}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    ) : (
-                      <>
-                <div className="instructions">
-                    <p>Welcome to the Trivia Quiz!</p>
-                    <p>Answer each question to the best of your ability. Click on your chosen answer to proceed to the next question.</p>
-                    <p>Your score will be displayed at the end. Good luck!</p>
+            ) : questions.length > 0 ? (
+                <div className="question-section">
+                    <div className="question-count">
+                        <span>Question {currentQuestionIndex + 1}</span>/{questions.length}
+                    </div>
+                    <div className="score-section">
+                        Current Score: {score}
+                    </div>
+                    <div className="question-text">{questions[currentQuestionIndex].question}</div>
+                    <div className="answer-section">
+                        {questions[currentQuestionIndex].answers.map((answer, index) => (
+                            <button 
+                                key={index} 
+                                onClick={() => handleAnswerOptionClick(answer.isCorrect, index)}>
+                                {answer.text}
+                            </button>
+                        ))}
+                    </div>
                 </div>
-                <button onClick={startQuiz}>Start Quiz</button>
-            </>
-                    )}
-                </>
+            ) : (
+                <div className="start-section">
+                    <div className="instructions">
+                        <p>Welcome to the Trivia Quiz!</p>
+                        <p>Answer each question to the best of your ability. Click on your chosen answer to proceed to the next question.</p>
+                        <p>Your score will be displayed at the end. Good luck!</p>
+                    </div>
+                    <button onClick={startQuiz}>Start Quiz</button>
+                    
+                    <div className="top-score">
+                        <h3>Top Score:</h3>
+                        {highscores[0] && (
+                            <p>{highscores[0].username}: {highscores[0].score}</p>
+                        )}
+                    </div>
+                    <button onClick={toggleHighScores}>High Scores</button>
+                </div>
             )}
         </div>
     );
