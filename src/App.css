@@ -1,0 +1,33 @@
+.quiz-app {
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.score-section {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.question-section, .answer-section {
+  margin: 20px 0;
+}
+
+.question-count, .question-text {
+  font-size: 20px;
+}
+
+.answer-section button {
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007BFF;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.answer-section button:hover {
+  background-color: #0056b3;
+}
