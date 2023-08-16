@@ -57,6 +57,16 @@ const QuizApp = () => {
         setShowHighScores(prev => !prev);
     };
 
+    const resetQuiz = () => {
+    setQuestions([]);
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setShowScore(false);
+    setShowSaveScore(false);
+    setShowHighScores(false);
+    setUsername("");
+};
+
     return (
         <div className="quiz-app">
             {showHighScores ? (
@@ -104,7 +114,9 @@ const QuizApp = () => {
                             </button>
                         ))}
                     </div>
+                    <button className="home-button" onClick={resetQuiz}>Home</button>
                 </div>
+                
             ) : (
                 <div className="start-section">
                     <div className="instructions">

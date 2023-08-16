@@ -4,9 +4,16 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors()); // Use CORS middleware to handle cross-origin requests
+// Set up CORS to accept requests from your client deployed on GitHub Pages
+const corsOptions = {
+    origin: 'https://Azrael-Savage.github.io',
+    optionsSuccessStatus: 200 
+};
 
-const PORT = 3001;
+app.use(cors(corsOptions));
+
+// This ensures the app uses the port provided by Heroku or defaults to 3001 for local development
+const PORT = process.env.PORT || 3001;
 
 app.get('/getTriviaQuestions', async (req, res) => {
     try {
@@ -30,5 +37,5 @@ app.get('/getTriviaQuestions', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
